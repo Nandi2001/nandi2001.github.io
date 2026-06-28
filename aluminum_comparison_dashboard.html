@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aluminum Alloys Mechanical & Thermal Comparison Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-base: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --color-1xxx: #94a3b8;
+      --color-2xxx: #f97316;
+      --color-3xxx: #eab308;
+      --color-4xxx: #06b6d4;
+      --color-5xxx: #10b981;
+      --color-6xxx: #3b82f6;
+      --color-7xxx: #ec4899;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      padding: 24px;
+    }
+
+    header {
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #60a5fa, #c084fc, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+      letter-spacing: -0.025em;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      font-weight: 400;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      flex-grow: 1;
+    }
+
+    @media (min-width: 1024px) {
+      main {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 8px;
+    }
+
+    /* Controls styling */
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-label:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: #475569;
+    }
+
+    .checkbox-label input {
+      margin-right: 12px;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    /* Custom accent borders for alloy lines */
+    .alloy-1xxx { --accent: var(--color-1xxx); }
+    .alloy-2xxx { --accent: var(--color-2xxx); }
+    .alloy-3xxx { --accent: var(--color-3xxx); }
+    .alloy-4xxx { --accent: var(--color-4xxx); }
+    .alloy-5xxx { --accent: var(--color-5xxx); }
+    .alloy-6xxx { --accent: var(--color-6xxx); }
+    .alloy-7xxx { --accent: var(--color-7xxx); }
+
+    .checkbox-label.active {
+      border-left: 4px solid var(--accent);
+      background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Slider styling */
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .temp-display {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #38bdf8;
+      background-color: rgba(56, 189, 248, 0.1);
+      padding: 2px 10px;
+      border-radius: 6px;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #334155;
+      outline: none;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0284c7;
+      cursor: pointer;
+      border: 3px solid #f8fafc;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      transition: transform 0.1s;
+    }
+
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* Live Data Table Card */
+    .live-data-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .live-data-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background-color: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      border-left: 3px solid var(--accent);
+      transition: all 0.2s ease;
+    }
+
+    .live-data-item.inactive {
+      opacity: 0.35;
+    }
+
+    .live-data-val {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .live-data-percent {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-left: 6px;
+    }
+
+    /* Chart Area */
+    .content-area {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .chart-card {
+      position: relative;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+      position: relative;
+    }
+
+    svg.chart-svg {
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+    }
+
+    .tooltip {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      pointer-events: none;
+      font-size: 0.85rem;
+      display: none;
+      z-index: 10;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Detailed alloy information sheet */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .info-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .info-panel {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      background-color: rgba(255, 255, 255, 0.01);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .info-panel:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+      border-color: var(--accent);
+    }
+
+    .info-panel.selected {
+      background-color: rgba(255, 255, 255, 0.04);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.02);
+    }
+
+    .info-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background-color: var(--accent);
+      color: #0f172a;
+    }
+
+    .info-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .info-details {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .info-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .note-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      font-weight: bold;
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Aluminum Alloys Performance Dashboard</h1>
+    <div class="subtitle">Interactive Yield Strength vs. Temperature Analysis for Series 1xxx to 7xxx</div>
+  </header>
+
+  <main>
+    <!-- Left Controls Panel -->
+    <div class="sidebar">
+      <!-- Series Selector Card -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Select Alloy Series
+        </div>
+        <div class="checkbox-group" id="series-selector">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Temperature Control Card -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+          Temperature Control
+        </div>
+        <div class="slider-container">
+          <div class="slider-header">
+            <span>Set Operating Temp:</span>
+            <span class="temp-display" id="temp-val">20°C</span>
+          </div>
+          <input type="range" min="20" max="400" value="20" class="slider" id="temp-slider">
+          <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted)">
+            <span>20°C (Room Temp)</span>
+            <span>400°C</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live values card -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          Yield Strengths at Selected Temp
+        </div>
+        <div class="live-data-list" id="live-data-values">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Chart & Detail Panel -->
+    <div class="content-area">
+      <!-- Interactive Chart Card -->
+      <div class="card chart-card">
+        <div class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+          Yield Strength vs. Temperature Graph
+        </div>
+        <div class="chart-container" id="chart-parent">
+          <svg class="chart-svg" id="alloy-chart" viewBox="0 0 800 450">
+            <!-- Drawn by JS -->
+          </svg>
+          <div class="tooltip" id="chart-tooltip"></div>
+        </div>
+      </div>
+
+      <!-- Details Sheet Card -->
+      <div class="card">
+        <div class="card-title" id="info-sheet-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Alloy Series Specifications Sheet
+        </div>
+        <div class="info-grid" id="specs-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Dataset for representative alloys
+    // Points are in [temperature °C, yield strength MPa]
+    const alloyData = {
+      "1xxx": {
+        name: "1xxx Series (Pure Al)",
+        alloy: "1100-H14",
+        element: "Aluminum (99.0%+)",
+        treatable: "No (Strain Hardened)",
+        weakest: "1060-O (10 MPa)",
+        strongest: "1100-H18 (150 MPa)",
+        softeningOnset: "150°C",
+        meltingRange: "643°C - 657°C",
+        color: "#94a3b8",
+        desc: "Commercially pure aluminum. Highly ductile with outstanding corrosion resistance and conductivity, but low strength. Strength loss above 150°C is due to recovery of dislocation density.",
+        points: [[20, 115], [100, 110], [150, 95], [200, 75], [250, 45], [300, 25], [350, 15], [400, 10]]
+      },
+      "2xxx": {
+        name: "2xxx Series (Al-Cu)",
+        alloy: "2024-T4",
+        element: "Copper (Cu)",
+        treatable: "Yes (Age Hardened)",
+        weakest: "2024-O (75 MPa)",
+        strongest: "2195-T8 (510 MPa)",
+        softeningOnset: "120°C - 150°C",
+        meltingRange: "502°C - 638°C",
+        color: "#f97316",
+        desc: "High strength aerospace alloys. Strengthened by Al2Cu precipitates. Overaging and precipitate coarsening begins rapidly above 150°C, causing permanent, drastic strength reduction.",
+        points: [[20, 325], [100, 290], [150, 240], [200, 180], [250, 110], [300, 60], [350, 30], [400, 15]]
+      },
+      "3xxx": {
+        name: "3xxx Series (Al-Mn)",
+        alloy: "3003-H14",
+        element: "Manganese (Mn)",
+        treatable: "No (Strain Hardened)",
+        weakest: "3003-O (40 MPa)",
+        strongest: "3104-H19 (260 MPa)",
+        softeningOnset: "200°C - 230°C",
+        meltingRange: "629°C - 654°C",
+        color: "#eab308",
+        desc: "Work-hardenable general purpose alloy with moderate strength and excellent formability. Highly thermally stable compared to age-hardened alloys; resists softening until recovery starts around 200°C.",
+        points: [[20, 145], [100, 130], [150, 110], [200, 75], [250, 45], [300, 25], [350, 15], [400, 10]]
+      },
+      "4xxx": {
+        name: "4xxx Series (Al-Si)",
+        alloy: "4032-T6",
+        element: "Silicon (Si)",
+        treatable: "Varies (4032 is)",
+        weakest: "4043-O (70 MPa)",
+        strongest: "4032-T6 (315 MPa)",
+        softeningOnset: "150°C - 170°C",
+        meltingRange: "532°C - 576°C",
+        color: "#06b6d4",
+        desc: "Silicon addition lowers melting point and increases wear resistance. 4032-T6 is a dedicated high-temperature piston alloy. Overages above 170°C. Solidus is extremely low (532°C), perfect for filler wire.",
+        points: [[20, 315], [100, 300], [150, 240], [200, 170], [250, 110], [300, 40], [350, 20], [400, 12]]
+      },
+      "5xxx": {
+        name: "5xxx Series (Al-Mg)",
+        alloy: "5083-H116",
+        element: "Magnesium (Mg)",
+        treatable: "No (Strain Hardened)",
+        weakest: "5005-O (40 MPa)",
+        strongest: "5456-H18 (290 MPa)",
+        softeningOnset: "120°C - 150°C",
+        meltingRange: "568°C - 640°C",
+        color: "#10b981",
+        desc: "Excellent weldability and marine corrosion resistance. Softening begins above 120°C. WARNING: Sustained exposure >65°C causes Mg sensitization (beta-phase precipitation), leading to stress corrosion cracking.",
+        points: [[20, 215], [100, 180], [150, 160], [200, 130], [250, 80], [300, 40], [350, 20], [400, 12]]
+      },
+      "6xxx": {
+        name: "6xxx Series (Al-Mg-Si)",
+        alloy: "6061-T6",
+        element: "Magnesium & Silicon",
+        treatable: "Yes (Age Hardened)",
+        weakest: "6063-O (48 MPa)",
+        strongest: "6066-T6 (360 MPa)",
+        softeningOnset: "120°C - 140°C",
+        meltingRange: "582°C - 652°C",
+        color: "#3b82f6",
+        desc: "Highly versatile structural alloys strengthened by Mg2Si precipitates. Extremely popular, but suffers rapid, permanent overaging when exposed to temperatures exceeding 130°C.",
+        points: [[20, 276], [100, 240], [150, 170], [200, 100], [250, 50], [300, 30], [350, 20], [400, 12]]
+      },
+      "7xxx": {
+        name: "7xxx Series (Al-Zn)",
+        alloy: "7075-T6",
+        element: "Zinc (Zn)",
+        treatable: "Yes (Age Hardened)",
+        weakest: "7075-O (103 MPa)",
+        strongest: "7068-T6 (680 MPa)",
+        softeningOnset: "90°C - 100°C",
+        meltingRange: "475°C - 635°C",
+        color: "#ec4899",
+        desc: "Ultra-high strength structural alloys. Extremely sensitive to heat: precipitation structure begins destabilizing at just 90°C. Solidus is extremely low (475°C), making it highly crack-sensitive (unweldable).",
+        points: [[20, 503], [100, 430], [150, 330], [200, 180], [250, 70], [300, 30], [350, 15], [400, 10]]
+      }
+    };
+
+    // UI state
+    let activeSeries = {
+      "1xxx": true,
+      "2xxx": true,
+      "3xxx": true,
+      "4xxx": true,
+      "5xxx": true,
+      "6xxx": true,
+      "7xxx": true
+    };
+    let currentTemp = 20;
+    let selectedInfoKey = "7xxx"; // Start by highlighting 7xxx
+
+    // Coordinate mapping parameters
+    const svgWidth = 800;
+    const svgHeight = 450;
+    const padding = { left: 60, right: 180, top: 50, bottom: 60 };
+    const chartW = svgWidth - padding.left - padding.right;
+    const chartH = svgHeight - padding.top - padding.bottom;
+
+    // Helper functions for mapping
+    function mapX(temp) {
+      return padding.left + ((temp - 20) / 380) * chartW;
+    }
+
+    function mapY(strength) {
+      return padding.top + chartH - (strength / 600) * chartH;
+    }
+
+    function revMapX(xVal) {
+      const relativeX = xVal - padding.left;
+      return 20 + (relativeX / chartW) * 380;
+    }
+
+    // Linear interpolation function
+    function getStrength(temp, key) {
+      const points = alloyData[key].points;
+      if (temp <= points[0][0]) return points[0][1];
+      if (temp >= points[points.length - 1][0]) return points[points.length - 1][1];
+
+      for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        if (temp >= p1[0] && temp <= p2[0]) {
+          const tRatio = (temp - p1[0]) / (p2[0] - p1[0]);
+          return p1[1] + tRatio * (p2[1] - p1[1]);
+        }
+      }
+      return 0;
+    }
+
+    // Render alloy selector in the sidebar
+    function initSelectors() {
+      const container = document.getElementById('series-selector');
+      container.innerHTML = '';
+      
+      Object.keys(alloyData).forEach(key => {
+        const data = alloyData[key];
+        const label = document.createElement('label');
+        label.className = `checkbox-label alloy-${key} ${activeSeries[key] ? 'active' : ''}`;
+        label.style.setProperty('--accent', data.color);
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = activeSeries[key];
+        checkbox.addEventListener('change', (e) => {
+          activeSeries[key] = e.target.checked;
+          if (e.target.checked) {
+            label.classList.add('active');
+          } else {
+            label.classList.remove('active');
+          }
+          drawChart();
+          updateLiveValues();
+        });
+
+        label.appendChild(checkbox);
+        
+        const textNode = document.createTextNode(`${key} Series (${data.alloy})`);
+        label.appendChild(textNode);
+        
+        container.appendChild(label);
+      });
+    }
+
+    // Render alloy details cards
+    function initSpecsGrid() {
+      const grid = document.getElementById('specs-grid');
+      grid.innerHTML = '';
+      
+      Object.keys(alloyData).forEach(key => {
+        const data = alloyData[key];
+        const panel = document.createElement('div');
+        panel.className = `info-panel alloy-${key} ${selectedInfoKey === key ? 'selected' : ''}`;
+        panel.style.setProperty('--accent', data.color);
+        panel.id = `panel-${key}`;
+        
+        panel.addEventListener('click', () => {
+          document.querySelectorAll('.info-panel').forEach(p => p.classList.remove('selected'));
+          panel.classList.add('selected');
+          selectedInfoKey = key;
+        });
+
+        const showSensitizedWarning = key === '5xxx';
+
+        panel.innerHTML = `
+          <div class="info-header">
+            <span class="badge">${key}</span>
+            <span class="info-title">${data.name}</span>
+          </div>
+          <div class="info-details">
+            <span class="info-label">Representative Alloy:</span>
+            <span class="info-value" style="color: ${data.color}">${data.alloy}</span>
+            
+            <span class="info-label">Alloying Elements:</span>
+            <span class="info-value">${data.element}</span>
+            
+            <span class="info-label">Heat Treatable:</span>
+            <span class="info-value">${data.treatable}</span>
+            
+            <span class="info-label">Yield Strength (Weakest):</span>
+            <span class="info-value">${data.weakest}</span>
+            
+            <span class="info-label">Yield Strength (Strongest):</span>
+            <span class="info-value" style="font-weight: 800">${data.strongest}</span>
+            
+            <span class="info-label">Melting Range:</span>
+            <span class="info-value">${data.meltingRange}</span>
+            
+            <span class="info-label">Softening Onset:</span>
+            <span class="info-value" style="color: #ef4444">${data.softeningOnset}</span>
+          </div>
+          <p style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4">${data.desc}</p>
+          ${showSensitizedWarning ? '<div style="margin-top: 8px;"><span class="note-tag">SAFETY NOTE</span> <span style="font-size: 0.75rem; color: #f87171;">Avoid sustained service &gt;65°C due to stress-corrosion cracking risk.</span></div>' : ''}
+        `;
+        
+        grid.appendChild(panel);
+      });
+    }
+
+    // Update live yield strength numbers in the list based on current temperature
+    function updateLiveValues() {
+      const container = document.getElementById('live-data-values');
+      container.innerHTML = '';
+
+      Object.keys(alloyData).forEach(key => {
+        const data = alloyData[key];
+        const isActive = activeSeries[key];
+        const strengthVal = getStrength(currentTemp, key);
+        const rtStrength = data.points[0][1];
+        const percentRetention = Math.round((strengthVal / rtStrength) * 100);
+
+        const item = document.createElement('div');
+        item.className = `live-data-item alloy-${key} ${isActive ? '' : 'inactive'}`;
+        item.style.setProperty('--accent', data.color);
+
+        item.innerHTML = `
+          <div>
+            <span style="font-weight:600; color: ${isActive ? data.color : 'var(--text-muted)'}">${data.alloy} (${key})</span>
+          </div>
+          <div style="text-align: right">
+            <span class="live-data-val">${Math.round(strengthVal)} MPa</span>
+            <span class="live-data-percent">(${percentRetention}%)</span>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Redraw SVG Chart
+    function drawChart() {
+      const svg = document.getElementById('alloy-chart');
+      svg.innerHTML = '';
+
+      // Create definitions for filters (e.g. glow effects)
+      const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+      defs.innerHTML = `
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      `;
+      svg.appendChild(defs);
+
+      // Y-axis gridlines & labels
+      for (let yieldVal = 0; yieldVal <= 600; yieldVal += 100) {
+        const y = mapY(yieldVal);
+        
+        // Gridline
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", padding.left);
+        line.setAttribute("y1", y);
+        line.setAttribute("x2", padding.left + chartW);
+        line.setAttribute("y2", y);
+        line.setAttribute("stroke", yieldVal === 0 ? "#64748b" : "#334155");
+        line.setAttribute("stroke-width", yieldVal === 0 ? "2" : "1");
+        if (yieldVal > 0) line.setAttribute("stroke-dasharray", "4");
+        svg.appendChild(line);
+
+        // Label
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", padding.left - 10);
+        text.setAttribute("y", y + 4);
+        text.setAttribute("fill", "#94a3b8");
+        text.setAttribute("font-size", "11");
+        text.setAttribute("text-anchor", "end");
+        text.textContent = yieldVal;
+        svg.appendChild(text);
+      }
+
+      // X-axis gridlines & labels
+      const temps = [20, 100, 150, 200, 250, 300, 350, 400];
+      temps.forEach(temp => {
+        const x = mapX(temp);
+
+        // Gridline
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x);
+        line.setAttribute("y1", padding.top);
+        line.setAttribute("x2", x);
+        line.setAttribute("y2", padding.top + chartH);
+        line.setAttribute("stroke", temp === 20 || temp === 400 ? "#64748b" : "#334155");
+        line.setAttribute("stroke-width", "1");
+        if (temp !== 20 && temp !== 400) line.setAttribute("stroke-dasharray", "4");
+        svg.appendChild(line);
+
+        // Label
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x);
+        text.setAttribute("y", padding.top + chartH + 18);
+        text.setAttribute("fill", "#94a3b8");
+        text.setAttribute("font-size", "11");
+        text.setAttribute("text-anchor", "middle");
+        text.textContent = temp === 20 ? "20°C" : `${temp}°C`;
+        svg.appendChild(text);
+      });
+
+      // Axis Titles
+      const yTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      yTitle.setAttribute("x", -(padding.top + chartH/2));
+      yTitle.setAttribute("y", 15);
+      yTitle.setAttribute("transform", "rotate(-90)");
+      yTitle.setAttribute("fill", "#cbd5e1");
+      yTitle.setAttribute("font-size", "12");
+      yTitle.setAttribute("font-weight", "600");
+      yTitle.setAttribute("text-anchor", "middle");
+      yTitle.textContent = "Yield Strength (MPa)";
+      svg.appendChild(yTitle);
+
+      const xTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      xTitle.setAttribute("x", padding.left + chartW/2);
+      xTitle.setAttribute("y", padding.top + chartH + 45);
+      xTitle.setAttribute("fill", "#cbd5e1");
+      xTitle.setAttribute("font-size", "12");
+      xTitle.setAttribute("font-weight", "600");
+      xTitle.setAttribute("text-anchor", "middle");
+      xTitle.textContent = "Temperature (°C)";
+      svg.appendChild(xTitle);
+
+      // Draw curves
+      Object.keys(alloyData).forEach(key => {
+        if (!activeSeries[key]) return;
+        const data = alloyData[key];
+        const points = data.points;
+
+        // Construct SVG path
+        let pathD = "";
+        points.forEach((p, idx) => {
+          const x = mapX(p[0]);
+          const y = mapY(p[1]);
+          pathD += `${idx === 0 ? 'M' : 'L'} ${x} ${y} `;
+        });
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathD);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", data.color);
+        path.setAttribute("stroke-width", selectedInfoKey === key ? "4.5" : "2.5");
+        path.setAttribute("stroke-linecap", "round");
+        path.setAttribute("stroke-linejoin", "round");
+        if (key === "4xxx") path.setAttribute("stroke-dasharray", "4,2");
+        
+        // Glow effect for selected
+        if (selectedInfoKey === key) {
+          path.setAttribute("filter", "url(#glow)");
+          path.style.opacity = "1";
+        } else {
+          path.style.opacity = "0.7";
+        }
+        svg.appendChild(path);
+
+        // Draw points
+        points.forEach(p => {
+          const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          circle.setAttribute("cx", mapX(p[0]));
+          circle.setAttribute("cy", mapY(p[1]));
+          circle.setAttribute("r", selectedInfoKey === key ? "4.5" : "3");
+          circle.setAttribute("fill", "#ffffff");
+          circle.setAttribute("stroke", data.color);
+          circle.setAttribute("stroke-width", "2");
+          
+          // Mouse hover details
+          circle.addEventListener('mouseover', (e) => {
+            showTooltip(e, `${data.alloy} (${key})<br>Temp: ${p[0]}°C<br>Yield: ${p[1]} MPa`);
+            circle.setAttribute("r", "6");
+          });
+          circle.addEventListener('mouseout', () => {
+            hideTooltip();
+            circle.setAttribute("r", selectedInfoKey === key ? "4.5" : "3");
+          });
+
+          svg.appendChild(circle);
+        });
+      });
+
+      // Draw Softening Threshold Lines
+      // 7xxx limits (95°C)
+      const x90 = mapX(95);
+      const line90 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line90.setAttribute("x1", x90);
+      line90.setAttribute("y1", padding.top);
+      line90.setAttribute("x2", x90);
+      line90.setAttribute("y2", padding.top + chartH);
+      line90.setAttribute("stroke", "#ec4899");
+      line90.setAttribute("stroke-width", "1");
+      line90.setAttribute("stroke-dasharray", "2,6");
+      svg.appendChild(line90);
+
+      // 6xxx limit (130°C)
+      const x130 = mapX(130);
+      const line130 = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line130.setAttribute("x1", x130);
+      line130.setAttribute("y1", padding.top);
+      line130.setAttribute("x2", x130);
+      line130.setAttribute("y2", padding.top + chartH);
+      line130.setAttribute("stroke", "#3b82f6");
+      line130.setAttribute("stroke-width", "1");
+      line130.setAttribute("stroke-dasharray", "2,6");
+      svg.appendChild(line130);
+
+      // Draw current temperature line (interactive pointer)
+      const xPointer = mapX(currentTemp);
+      const pointer = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      pointer.setAttribute("x1", xPointer);
+      pointer.setAttribute("y1", padding.top);
+      pointer.setAttribute("x2", xPointer);
+      pointer.setAttribute("y2", padding.top + chartH);
+      pointer.setAttribute("stroke", "#38bdf8");
+      pointer.setAttribute("stroke-width", "2");
+      pointer.setAttribute("shadow", "0 0 10px #38bdf8");
+      svg.appendChild(pointer);
+
+      // Draw intersecting dots on active lines at pointer location
+      Object.keys(alloyData).forEach(key => {
+        if (!activeSeries[key]) return;
+        const data = alloyData[key];
+        const strength = getStrength(currentTemp, key);
+        const yPointer = mapY(strength);
+
+        const activeDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        activeDot.setAttribute("cx", xPointer);
+        activeDot.setAttribute("cy", yPointer);
+        activeDot.setAttribute("r", "6");
+        activeDot.setAttribute("fill", data.color);
+        activeDot.setAttribute("stroke", "#ffffff");
+        activeDot.setAttribute("stroke-width", "2");
+        activeDot.setAttribute("filter", "url(#glow)");
+        svg.appendChild(activeDot);
+      });
+
+      // Chart Legend (Inside SVG, fixed at right side)
+      const legendX = svgWidth - padding.right + 15;
+      const legendYStart = padding.top + 20;
+      let count = 0;
+      
+      Object.keys(alloyData).forEach(key => {
+        const data = alloyData[key];
+        const isSelected = selectedInfoKey === key;
+        
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute("transform", `translate(${legendX}, ${legendYStart + count * 24})`);
+        g.style.cursor = "pointer";
+        g.style.opacity = activeSeries[key] ? "1" : "0.35";
+        
+        g.addEventListener('click', () => {
+          document.querySelectorAll('.info-panel').forEach(p => p.classList.remove('selected'));
+          const p = document.getElementById(`panel-${key}`);
+          if (p) p.classList.add('selected');
+          selectedInfoKey = key;
+          drawChart();
+        });
+
+        // Color box/line
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", 0);
+        line.setAttribute("y1", 8);
+        line.setAttribute("x2", 18);
+        line.setAttribute("y2", 8);
+        line.setAttribute("stroke", data.color);
+        line.setAttribute("stroke-width", isSelected ? "4" : "2");
+        if (key === "4xxx") line.setAttribute("stroke-dasharray", "3,1");
+        g.appendChild(line);
+
+        // Label
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", 24);
+        text.setAttribute("y", 12);
+        text.setAttribute("fill", isSelected ? "#ffffff" : "#94a3b8");
+        text.setAttribute("font-size", "11");
+        text.setAttribute("font-weight", isSelected ? "bold" : "normal");
+        text.textContent = `${key} (${data.alloy})`;
+        g.appendChild(text);
+
+        svg.appendChild(g);
+        count++;
+      });
+    }
+
+    // Tooltip handling
+    const tooltip = document.getElementById('chart-tooltip');
+    function showTooltip(event, content) {
+      tooltip.innerHTML = content;
+      tooltip.style.display = 'block';
+      const containerRect = document.getElementById('chart-parent').getBoundingClientRect();
+      const x = event.clientX - containerRect.left + 15;
+      const y = event.clientY - containerRect.top - 15;
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+    }
+
+    // Hide Tooltip
+    function hideTooltip() {
+      tooltip.style.display = 'none';
+    }
+
+    // Interactive Slider input handler
+    const slider = document.getElementById('temp-slider');
+    const tempVal = document.getElementById('temp-val');
+
+    slider.addEventListener('input', (e) => {
+      currentTemp = parseInt(e.target.value);
+      tempVal.textContent = `${currentTemp}°C`;
+      drawChart();
+      updateLiveValues();
+    });
+
+    // Make chart interactive on click to place pointer
+    const svgEl = document.getElementById('alloy-chart');
+    svgEl.addEventListener('click', (e) => {
+      const rect = svgEl.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const scaleX = svgWidth / rect.width;
+      const svgX = clickX * scaleX;
+      
+      if (svgX >= padding.left && svgX <= padding.left + chartW) {
+        const temp = Math.round(revMapX(svgX));
+        slider.value = temp;
+        currentTemp = temp;
+        tempVal.textContent = `${currentTemp}°C`;
+        drawChart();
+        updateLiveValues();
+      }
+    });
+
+    // Initialize Dashboard
+    initSelectors();
+    initSpecsGrid();
+    drawChart();
+    updateLiveValues();
+
+    // Adjust canvas/svg responsiveness
+    window.addEventListener('resize', () => {
+      drawChart();
+    });
+  </script>
+</body>
+</html>
